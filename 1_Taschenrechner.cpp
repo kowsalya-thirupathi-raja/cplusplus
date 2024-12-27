@@ -1,81 +1,94 @@
+// Task: Calculator 
+
+// In the following, a pocket calculator is to be created that can perform the four basic arithmetic operations. 
+// The calculator works according to the following principle:
+// read in the first number, then the operator for the calculation type and then the second number.
+
+// Pay attention to decimal numbers and unauthorised arithmetic operations. 
+
+// a) Write a programme that reads in a number entered by the user and checks it for validity. 
+// If the input is invalid, the user should be given the opportunity to re-enter a value. 
+
+// b) Next, the operator is read in. Use the char data type to 
+// read in an operator (+, -, *, /). Take incorrect entries into account. 
+
+// Then read in the second number (continue to watch out for 
+// incorrect entries) and then carry out the desired calculation. 
+
+// Pay attention to meaningful mathematical calculations.
+
 #include <iostream>
-#include <limits>
+#include <string>
+using namespace std;
 
-// Function to safely read a valid number
 double dreadNumber() {
-    double dnumber;
-    while (true) {
-        std::cout << "Enter a number: ";
-        std::cin >> dnumber;
-
-        // Check if the input is valid
-        if (std::cin.fail()) {
-            std::cin.clear(); // Reset error flag
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear input buffer
-            std::cout << "Invalid input. Please enter a valid number.\n";
-        } else {
-            return dnumber; // Valid number is returned
-        }
-    }
+    double dNumber;
+    cin >> dNumber;
+	while(cin.fail())
+	{
+		cout << "Invalid input. Please enter a valid number." << endl;
+		cin.clear();
+		cin.ignore(1000,'\n');
+		cin >> dNumber;
+	}
+    return dNumber;
 }
 
-// Function to safely read a valid operator
 char chreadOperator() {
-    char chop;
-    while (true) {
-        std::cout << "Enter an operator (+, -, *, /): ";
-        std::cin >> chop;
-
-        // Check if the operator is valid
-        if (chop == '+' || chop == '-' || chop == '*' || chop == '/') {
-            return chop; // Valid operator is returned
-        } else {
-            std::cout << "Invalid operator. Please enter one of +, -, *, or /.\n";
-        }
+    char chOperator;
+    cin >> chOperator;
+    string supportedOperator = "+-*/";
+    string::size_type idx = supportedOperator.find(chOperator);
+    while (idx == string::npos) {
+        cout << "Invalid input. Please enter only an operation +,-,*,/." << endl;
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cin >> chOperator;
+        idx = supportedOperator.find(chOperator);
     }
+    return chOperator;
 }
 
 int main() {
-    std::cout << "Welcome to the calculator!\n";
+	cout << "This is a pocket calculator that can perform the four basic arithmetic operations +,-,*,/." << endl;
 
-    // Read the first number
-    double dnum1 = dreadNumber();
+	//	get the first number
+	cout << "the first number: "  << endl;
+    double dFirstNumber = dreadNumber();
 
-    // Read the operator
-    char chop = chreadOperator();
+	//	get the operator
+	char chCalcOperator;
+	cout << "operation: " << endl;
+    chCalcOperator = chreadOperator();
+	
+	//	get the second number
+	double dSecondNumber = 0;
+	cout << "the second number: "  << endl;
+    dSecondNumber = dreadNumber();
 
-    // Read the second number
-    double dnum2;
-    while (true) {
-        dnum2 = dreadNumber();
+	//	calculate the result
+	double dResult = 0;
+	switch(chCalcOperator)
+	{
+	case '+':
+		dResult = dFirstNumber + dSecondNumber;
+		break;
+	case '-':
+		dResult = dFirstNumber - dSecondNumber;
+		break;
+	case '*':
+		dResult = dFirstNumber * dSecondNumber;
+		break;
+	case '/':
+		if (dSecondNumber == 0)
+		{
+			cout << "Division by zero is not allowed!" << endl;
+			return 0;
+		}
+		dResult = dFirstNumber / dSecondNumber;
+		break;
+	}
+	cout << "the result: " << dResult << endl;
 
-        // Check if division by zero is attempted
-        if (chop == '/' && dnum2 == 0) {
-            std::cout << "Division by zero is not allowed. Please enter a different number.\n";
-        } else {
-            break; // Valid number
-        }
-    }
-
-    // Perform calculation and display the result
-    double dresult;
-    switch (chop) {
-        case '+':
-            dresult = dnum1 + dnum2;
-            break;
-        case '-':
-            dresult = dnum1 - dnum2;
-            break;
-        case '*':
-            dresult = dnum1 * dnum2;
-            break;
-        case '/':
-            dresult = dnum1 / dnum2;
-            break;
-    }
-
-    // Output result
-    std::cout << "Result: " << dnum1 << " " << chop << " " << dnum2 << " = " << dresult << std::endl;
-
-    return 0;
+	return 0;
 }
